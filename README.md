@@ -16,7 +16,7 @@ WHERE S.STATUS = 'VALID'
 #[AND S.STAFF_ID = :staffId]
 #[AND S.STAFF_NAME LIKE :staffName]
 
-# sqltool提供了几乎你能想到的所有结构化数据库交互方法（Sqltool provides almost all kinds of structured database interaction methods you can imagine）
+# 提供了几乎你能想到的所有结构化数据库交互方法（It provides almost all kinds of structured database interaction methods you can imagine）
 	/**
 	 * 插入操作
 	 * 
