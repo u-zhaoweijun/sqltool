@@ -15,3 +15,398 @@ FROM STAFF_INFO S
 WHERE S.STATUS = 'VALID'
 #[AND S.STAFF_ID = :staffId]
 #[AND S.STAFF_NAME LIKE :staffName]
+
+# sqltool提供了几乎你能想到的所有结构化数据库交互方法（Sqltool provides almost all kinds of structured database interaction methods you can imagine）
+	/**
+	 * 插入操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param obj
+	 *            实体对象（不能为null）
+	 * @return 返回受影响行数
+	 */
+	int insert(Map<String, String> options, Object obj);
+
+	/**
+	 * 插入操作（实体对象集为空则直接返回null）
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @return 返回每批的受影响行数
+	 */
+	int[] insert(Map<String, String> options, List<Object> rows);
+
+	/**
+	 * 使用默认批容量执行批量插入操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 */
+	void insertBatch(Map<String, String> options, List<Object> rows);
+
+	/**
+	 * 
+	 * 批量插入操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param batchSize
+	 *            批容量
+	 */
+	void insertBatch(Map<String, String> options, List<Object> rows, int batchSize);
+
+	/**
+	 * 软保存。仅对属性值不为null的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param obj
+	 *            实体对象
+	 * @return 返回受影响行数
+	 */
+	<T extends Serializable> int save(Map<String, String> options, T obj);
+
+	/**
+	 * 软保存。仅对属性值不为null的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 */
+	<T extends Serializable> void save(Map<String, String> options, List<T> rows);
+
+	/**
+	 * 使用默认批容量批量软保存。仅对属性值不为null的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 */
+	<T extends Serializable> void saveBatch(Map<String, String> options, List<T> rows);
+
+	/**
+	 * 
+	 * 批量软保存。仅对属性值不为null的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param batchSize
+	 *            批容量
+	 */
+	<T extends Serializable> void saveBatch(Map<String, String> options, List<T> rows, int batchSize);
+
+	/**
+	 * 部分硬保存。仅对属性值不为null或硬保存的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param obj
+	 *            实体对象
+	 * @param hardFields
+	 *            硬保存属性
+	 * @return 返回受影响行数
+	 */
+	<T extends Serializable> int save(Map<String, String> options, T obj, String[] hardFields);
+
+	/**
+	 * 部分硬保存。仅对属性值不为null或硬保存的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param hardFields
+	 *            硬保存属性
+	 */
+	<T extends Serializable> void save(Map<String, String> options, List<T> rows, String[] hardFields);
+
+	/**
+	 * 使用默认批容量批量部分硬保存。仅对属性值不为null或硬保存的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param hardFields
+	 *            硬保存属性
+	 */
+	<T extends Serializable> void saveBatch(Map<String, String> options, List<T> rows, String[] hardFields);
+
+	/**
+	 * 
+	 * 批量部分硬保存。仅对属性值不为null或硬保存的字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param hardFields
+	 *            硬保存属性
+	 * @param batchSize
+	 *            批容量
+	 */
+	<T extends Serializable> void saveBatch(Map<String, String> options, List<T> rows, String[] hardFields,
+			int batchSize);
+
+	/**
+	 * 硬保存。对所有字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param obj
+	 *            实体对象
+	 * @return 返回受影响行数
+	 */
+	<T extends Serializable> int hardSave(Map<String, String> options, T obj);
+
+	/**
+	 * 硬保存。对所有字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 */
+	<T extends Serializable> void hardSave(Map<String, String> options, List<T> rows);
+
+	/**
+	 * 使用默认批容量批量硬保存。对所有字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 */
+	<T extends Serializable> void hardSaveBatch(Map<String, String> options, List<T> rows);
+
+	/**
+	 * 
+	 * 批量硬保存。对所有字段执行插入/更新操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param rows
+	 *            实体对象集
+	 * @param batchSize
+	 *            批容量
+	 */
+	<T extends Serializable> void hardSaveBatch(Map<String, String> options, List<T> rows, int batchSize);
+
+	/**
+	 * 从数据库查询并组装实体对象
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param obj
+	 *            实体对象
+	 * @return 返回查询到的实体对象
+	 */
+	@SuppressWarnings("unchecked")
+	<T extends Serializable> T get(Map<String, String> options, T obj);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）并组装对象，其中类型可以是实体对象，也可以是String、Number、
+	 * Date、BigDecimal类型，这事将返回结果集中的第1行第1列的值
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回查询到的对象
+	 */
+	<T extends Serializable> T get(Map<String, String> options, Class<T> type, String dsql, Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）并组装对象，其中类型可以是实体对象，也可以是String、Number、
+	 * Date、BigDecimal类型，这时将返回结果集中的第1行第1列的值
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回查询到的对象
+	 */
+	<T extends Serializable> T get(Map<String, String> options, Class<T> type, String dsql,
+			Map<String, Object> params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）并组装对象列表，其中类型可以是实体对象，也可以是String、Number、
+	 * Date、BigDecimal类型，这时将返回结果集中的第1行的值
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回查询到的对象列表
+	 */
+	<T extends Serializable> List<T> select(Map<String, String> options, Class<T> type, String dsql,
+			Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）并组装对象列表，其中类型可以是实体对象，也可以是String、Number、
+	 * Date、BigDecimal类型，这时将返回结果集中的第1行的值
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回查询到的对象列表
+	 */
+	<T extends Serializable> List<T> select(Map<String, String> options, Class<T> type, String dsql,
+			Map<String, Object> params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 如果第一个结果是ResultSet对象，则为true；如果第一个结果是更新计数或没有结果，则为false
+	 */
+	boolean execute(Map<String, String> options, String dsql, Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 如果第一个结果是ResultSet对象，则为true；如果第一个结果是更新计数或没有结果，则为false
+	 */
+	boolean execute(Map<String, String> options, String dsql, Map<String, Object> params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回受影响行数
+	 */
+	int executeUpdate(Map<String, String> options, String dsql, Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作
+	 * 
+	 * @param options
+	 *            数据库配置
+	 * @param type
+	 *            对象类型
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回受影响行数
+	 */
+	int executeUpdate(Map<String, String> options, String dsql, Map<String, Object> params);
+
+	/**
+	 * 开始事务
+	 * 
+	 * @param options
+	 *            数据库配置
+	 */
+	void beginTransaction(Map<String, String> options);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作。该方法不自动提交事务，且调用前需要先调用beginTransaction方法开启事务，之后在合适的时机还需要调用commit方法提交事务。
+	 * 
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 如果第一个结果是ResultSet对象，则为true；如果第一个结果是更新计数或没有结果，则为false
+	 */
+	boolean execute(String dsql, Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作。该方法不自动提交事务，且调用前需要先调用beginTransaction方法开启事务，之后在合适的时机还需要调用commit方法提交事务。
+	 * 
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 如果第一个结果是ResultSet对象，则为true；如果第一个结果是更新计数或没有结果，则为false
+	 */
+	boolean execute(String dsql, Map<String, Object> params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作。该方法不自动提交事务，且调用前需要先调用beginTransaction方法开启事务，之后在合适的时机还需要调用commit方法提交事务。
+	 * 
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回受影响行数
+	 */
+	int executeUpdate(String dsql, Object... params);
+
+	/**
+	 * 使用动态结构化查询语言（DSQL）执行插入、修改、删除操作。该方法不自动提交事务，且调用前需要先调用beginTransaction方法开启事务，之后在合适的时机还需要调用commit方法提交事务。
+	 * 
+	 * @param dsql
+	 *            动态结构化查询语言
+	 * @param params
+	 *            查询参数键值集
+	 * @return 返回受影响行数
+	 */
+	int executeUpdate(String dsql, Map<String, Object> params);
+
+	/**
+	 * 事务回滚。在业务方法发生异常时调用。
+	 */
+	void rollback();
+
+	/**
+	 * 提交事务
+	 */
+	void commit();
+
+	/**
+	 * 执行一个事务操作
+	 * @param options 数据库配置
+	 * @param transaction 事务对象
+	 */
+	void execute(Map<String, String> options, Transaction transaction);
