@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.10mg.cn/schema/sqltool"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.10mg.cn/schema/sqltool"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+	<xsd:element name="sqltool">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="dsql" maxOccurs="unbounded"
+					minOccurs="0" type="dsqlType">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[动态SQL（DSQL）配置]]></xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="dsqlType">
+		<xsd:sequence>
+			<xsd:element name="script" minOccurs="1" maxOccurs="1"
+				type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[动态SQL（DSQL）脚本]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"
+			use="required">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[动态SQL（DSQL）编号]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+</xsd:schema>
