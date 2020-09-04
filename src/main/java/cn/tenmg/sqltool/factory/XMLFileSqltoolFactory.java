@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -95,7 +94,7 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 					if (log.isInfoEnabled()) {
 						log.info("扫描包：".concat(basePackage));
 					}
-					List<Object> files = getSqlResources(basePackage.replaceAll("\\.", "/"));
+					List<Object> files = getDsqlFiles(basePackage.replaceAll("\\.", "/"));
 					if (CollectionUtils.isEmpty(files)) {
 						log.warn("包：".concat(basePackage).concat("没有找到后缀名为").concat(suffix).concat("的文件"));
 					} else {
@@ -104,7 +103,7 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 							Sqltool sqltool;
 							String fileName;
 							if (file instanceof File) {
-								File f = ((File) file);
+								File f = (File) file;
 								fileName = f.getName();
 								if (log.isInfoEnabled()) {
 									log.info("开始解析".concat(fileName));
@@ -140,87 +139,51 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 		}
 	}
 
-	private List<Object> getSqlResources(String resourceDir) throws URISyntaxException, IOException {
+	private List<Object> getDsqlFiles(String dir) throws IOException, URISyntaxException {
+		dir = dir.trim();
 		List<Object> result = new ArrayList<Object>();
-		String realRes;
-		Enumeration<URL> urls;
-		URL url;
-		if (StringUtils.isNotBlank(resourceDir)) {
-			// 统一全角半角，用逗号分隔
-			String[] dirSet = resourceDir.replaceAll("\\；", ",").replaceAll("\\;", ",").split("\\,");
-			for (String dir : dirSet) {
-				realRes = dir.trim();
-				urls = getResourceUrls(realRes);
-				if (urls != null) {
-					while (urls.hasMoreElements()) {
-						url = urls.nextElement();
-						if (url.getProtocol().equals("jar")) {
-							if (realRes.charAt(0) == '/') {
-								realRes = realRes.substring(1);
-							}
-							JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
-							Enumeration<JarEntry> entries = jar.entries();
-							// 同样的进行循环迭代
-							JarEntry entry;
-							String name;
-							while (entries.hasMoreElements()) {
-								// 获取jar里的一个实体 可以是目录 和一些jar包里的其他文件 如META-INF等文件
-								entry = entries.nextElement();
-								name = entry.getName();
-								if (name.startsWith(realRes) && name.toLowerCase().endsWith(suffix)
-										&& !entry.isDirectory()) {
-									result.add(name);
-								}
-							}
-						} else {
-							getPathFiles(new File(url.toURI()), result);
+		Enumeration<URL> urls = ClassUtils.getDefaultClassLoader().getResources(dir);
+		if (urls != null) {
+			URL url;
+			while (urls.hasMoreElements()) {
+				url = urls.nextElement();
+				if (url.getProtocol().equals("jar")) {
+					JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+					Enumeration<JarEntry> entries = jar.entries();
+					JarEntry entry;
+					String name;
+					while (entries.hasMoreElements()) {// 获取jar里的一个实体 可以是目录也可以是文件
+						entry = entries.nextElement();
+						name = entry.getName();
+						if (!entry.isDirectory() && name.endsWith(suffix)) {
+							result.add(name);
 						}
 					}
+				} else {
+					getPathFiles(new File(url.toURI()), result);
 				}
 			}
 		}
 		return result;
 	}
 
-	private Enumeration<URL> getResourceUrls(String resource) throws IOException {
-		Enumeration<URL> urls = null;
-		if (StringUtils.isBlank(resource)) {
-			return urls;
-		}
-		File file = new File(resource);
-		if (file.exists()) {
-			Vector<URL> v = new Vector<URL>();
-			v.add(file.toURI().toURL());
-			urls = v.elements();
-		} else {
-			if (resource.charAt(0) == '/') {
-				resource = resource.substring(1);
-			}
-			urls = Thread.currentThread().getContextClassLoader().getResources(resource);
-		}
-		return urls;
-	}
-
-	private void getPathFiles(File parentFile, List<Object> fileList) {
-		if (null == parentFile)
-			return;
+	private void getPathFiles(File parentFile, List<Object> files) {
 		String fileName = parentFile.getName();
 		if (parentFile.isDirectory()) {
-			File[] files = parentFile.listFiles();
-			File file;
-			for (int loop = 0; loop < files.length; loop++) {
-				file = files[loop];
+			File file, listFiles[] = parentFile.listFiles();
+			for (int loop = 0; loop < listFiles.length; loop++) {
+				file = listFiles[loop];
 				fileName = file.getName();
 				if (file.isDirectory()) {
-					getPathFiles(files[loop], fileList);
+					getPathFiles(listFiles[loop], files);
 				} else {
 					if (fileName.endsWith(suffix)) {
-						fileList.add(file);
+						files.add(file);
 					}
 				}
 			}
 		} else if (fileName.endsWith(suffix)) {
-			fileList.add(parentFile);
+			files.add(parentFile);
 		}
 	}
 
