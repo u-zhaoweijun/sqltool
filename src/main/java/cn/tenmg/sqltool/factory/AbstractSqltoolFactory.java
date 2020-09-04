@@ -3,13 +3,10 @@ package cn.tenmg.sqltool.factory;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import cn.tenmg.sqltool.SqltoolFactory;
 import cn.tenmg.sqltool.config.model.Dsql;
 import cn.tenmg.sqltool.dsql.Sql;
 import cn.tenmg.sqltool.dsql.utils.DsqlUtils;
-import cn.tenmg.sqltool.utils.JSONUtils;
 
 /**
  * 封装了Sqltool工厂的基本功能
@@ -24,21 +21,7 @@ public abstract class AbstractSqltoolFactory implements SqltoolFactory {
 	 */
 	private static final long serialVersionUID = -8235596978687106626L;
 
-	private final static Logger log = Logger.getLogger(AbstractSqltoolFactory.class);
-
-	private static String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
-
 	protected final Map<String, Dsql> dsqls = new HashMap<String, Dsql>();
-
-	private boolean showSql = true;
-
-	public boolean isShowSql() {
-		return showSql;
-	}
-
-	public void setShowSql(boolean showSql) {
-		this.showSql = showSql;
-	}
 
 	@Override
 	public String getScript(String id) {
@@ -64,25 +47,11 @@ public abstract class AbstractSqltoolFactory implements SqltoolFactory {
 	public Sql parse(String dsql, Map<String, Object> params) {
 		Sql sql = null;
 		Dsql obj = dsqls.get(dsql);
-		if (showSql) {
-			StringBuilder sb = new StringBuilder();
-			if (obj == null) {
-				sql = DsqlUtils.parse(dsql, params);
-			} else {
-				sb.append("DSQL id: ").append(dsql).append(LINE_SEPARATOR);
-				sql = parse(obj, params);
-			}
-			sb.append("Target SQL: ").append(sql.getScript()).append(LINE_SEPARATOR).append("Params: ")
-					.append(JSONUtils.toJSONString(sql.getParams()));
-			log.info(sb);
+		if (obj == null) {
+			sql = DsqlUtils.parse(dsql, params);
 		} else {
-			if (obj == null) {
-				sql = DsqlUtils.parse(dsql, params);
-			} else {
-				sql = parse(obj, params);
-			}
+			sql = parse(obj, params);
 		}
-
 		return sql;
 	}
 

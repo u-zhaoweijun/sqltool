@@ -66,19 +66,17 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 		super();
 	}
 
-	public static final XMLFileSqltoolFactory bind(String basePackages, boolean showSql) {
+	public static final XMLFileSqltoolFactory bind(String basePackages) {
 		XMLFileSqltoolFactory factor = new XMLFileSqltoolFactory();
 		factor.setBasePackages(basePackages);
-		factor.setShowSql(showSql);
 		factor.init();
 		return factor;
 	}
 
-	public static final XMLFileSqltoolFactory bind(String basePackages, String suffix, boolean showSql) {
+	public static final XMLFileSqltoolFactory bind(String basePackages, String suffix) {
 		XMLFileSqltoolFactory factor = new XMLFileSqltoolFactory();
 		factor.setBasePackages(basePackages);
 		factor.setSuffix(suffix);
-		factor.setShowSql(showSql);
 		factor.init();
 		return factor;
 	}
