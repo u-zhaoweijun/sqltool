@@ -1,22 +1,81 @@
 # sqltool
+## 关于（About）
 一个给分布式环境提供动态结构化查询语言（DSQL）解析的框架，如Spark、Spring Cloud、Dubbo等等
 
 A framework provides Dynamic Structured Query Language(DSQL) Parsing for distributed environment, such as spark, spring cloud, Dubbo and so on
 
-# 什么是动态结构化查询语言（What is Dynamic Structured Query Language）？
+## 什么是动态结构化查询语言（What is Dynamic Structured Query Language）？
 动态结构化查询语言(DSQL)是一种使用特殊字符#[]标记动态片段的结构化查询语言(SQL)，当实际执行查询时，判断实际传入参数值是否为空（null）决定是否保留该片段，同时保留片段的特殊字符会被自动去除。以此来避免程序员手动拼接繁杂的SQL，使得程序员能从繁杂的业务逻辑中解脱出来。
 
 Dynamic Structured Query Language (DSQL) is a kind of Structured Query Language (SQL) which uses special character #[] to mark dynamic fragment. When the query is actually executed, whether the actual input parameter value is null determines whether to keep the fragment or not. At the same time, the special characters reserved in the fragment will be automatically removed. In order to avoid programmers manually splicing complicated SQL, programmers can be free from the complex business logic.
 
-# 例子（Example）
-SELECT
-  *
-FROM STAFF_INFO S
-WHERE S.STATUS = 'VALID'
-#[AND S.STAFF_ID = :staffId]
-#[AND S.STAFF_NAME LIKE :staffName]
+## 例子（Example）
+	SELECT
+	  *
+	FROM STAFF_INFO S
+	WHERE S.STATUS = 'VALID'
+	#[AND S.STAFF_ID = :staffId]
+	#[AND S.STAFF_NAME LIKE :staffName]
+1. 参数staffId为空（null），而staffName为非空（非null）时，实际执行的语句为：
 
-# 提供了几乎你能想到的所有结构化数据库交互方法（It provides almost all kinds of structured database interaction methods you can imagine）
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_NAME LIKE :staffName
+2. 相反，参数staffName为空（null），而staffId为非空（非null）时，实际执行的语句为：
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_ID = :staffId
+3. 或者，参数staffId、staffName均为空（null）时，实际执行的语句为：
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+4. 最后，参数staffId、staffName均为非空（非null）时，实际执行的语句为：
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_ID = :staffId
+		AND S.STAFF_NAME LIKE :staffName
+通过上面这个小例子，我们看到了动态结构化查询语言（DSQL）的魔力。这种魔力的来源是巧妙的运用了一个值：空(null)，因为该值往往在结构化查询语言(SQL)中很少用到，而且即使使用也是往往作为特殊的常量使用，比如：NVL(EMAIL,'无')，WHERE EMAIL IS NOT NULL等。
+
+1. When the parameter staffId is null and staffName is not null, the actual executed statement is as follows:
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_NAME LIKE :staffName
+2. On the contrary, when the parameter staffName is null and staffId is not null, the actual executed statement is:
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_ID = :staffId
+3. Or, when the parameters staffId and staffName are null, the actual executed statement is:
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+4. Finally, when the parameters staffId and staffName are not null, the actual executed statement is as follows：
+
+		SELECT
+		  *
+		FROM STAFF_INFO S
+		WHERE S.STATUS = 'VALID'
+		AND S.STAFF_ID = :staffId
+		AND S.STAFF_NAME LIKE :staffName
+Through the above simple example, we can see the magic of Dynamic Structured Query Language (DSQL). The source of this magic is the clever use of a value: null, because the value is often rarely used in Structured Query Language (SQL), and even if used, it is often used as a special constant, such as: NVL(email, 'none'), WHERE EMAIL IS NOT NULL, etc.
+## 提供了几乎你能想到的所有结构化数据库交互方法（It provides almost all kinds of structured database interaction methods you can imagine）
 	/**
 	 * 插入操作
 	 * 
