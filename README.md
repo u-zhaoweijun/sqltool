@@ -162,7 +162,7 @@ Sqltool provides several extremely useful classes: DsqlUtils, SqltoolFactory, Sq
 	/**
 	 * 使用DSQL编号查询。同时，你还可以使用Map对象来更自由地组织查询参数
 	 * 
-	 * Query with DSQL's id. You can also use map objects to organize query parameters  at the same time
+	 * Query with DSQL's id. You can also use map object to organize query parameters  at the same time
 	 */
 	Map<String, Object> paramaters = new HashMap<String, Object>();
 	paramaters.put("staffId", "000001");
