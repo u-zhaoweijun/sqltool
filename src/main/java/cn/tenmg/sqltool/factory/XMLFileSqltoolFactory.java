@@ -137,6 +137,17 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 		}
 	}
 
+	/**
+	 * 获取指定目录下的所有DSQL配置文件
+	 * 
+	 * @param dir
+	 *            指定目录
+	 * @return
+	 * @throws IOException
+	 *             发生I/O异常
+	 * @throws URISyntaxException
+	 *             统一资源标识符语法错误异常
+	 */
 	private List<Object> getDsqlFiles(String dir) throws IOException, URISyntaxException {
 		dir = dir.trim();
 		List<Object> result = new ArrayList<Object>();
@@ -158,22 +169,30 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 						}
 					}
 				} else {
-					getPathFiles(new File(url.toURI()), result);
+					getDsqlFiles(new File(url.toURI()), result);
 				}
 			}
 		}
 		return result;
 	}
 
-	private void getPathFiles(File parentFile, List<Object> files) {
-		String fileName = parentFile.getName();
-		if (parentFile.isDirectory()) {
-			File file, listFiles[] = parentFile.listFiles();
-			for (int loop = 0; loop < listFiles.length; loop++) {
-				file = listFiles[loop];
+	/**
+	 * 获取目录下的所有DSQL配置文件
+	 * 
+	 * @param parent
+	 *            目录
+	 * @param files
+	 *            结果列表
+	 */
+	private void getDsqlFiles(File parent, List<Object> files) {
+		String fileName = parent.getName();
+		if (parent.isDirectory()) {
+			File file, listFiles[] = parent.listFiles();
+			for (int i = 0; i < listFiles.length; i++) {
+				file = listFiles[i];
 				fileName = file.getName();
 				if (file.isDirectory()) {
-					getPathFiles(listFiles[loop], files);
+					getDsqlFiles(listFiles[i], files);
 				} else {
 					if (fileName.endsWith(suffix)) {
 						files.add(file);
@@ -181,7 +200,7 @@ public class XMLFileSqltoolFactory extends AbstractSqltoolFactory implements Sql
 				}
 			}
 		} else if (fileName.endsWith(suffix)) {
-			files.add(parentFile);
+			files.add(parent);
 		}
 	}
 
