@@ -76,6 +76,107 @@ Dynamic Structured Query Language (DSQL) is a kind of Structured Query Language 
 		AND S.STAFF_NAME LIKE :staffName
 Through the above simple example, we can see the magic of Dynamic Structured Query Language (DSQL). The source of this magic is the clever use of a value: null, because the value is often rarely used in Structured Query Language (SQL), and even if used, it is often used as a special constant, such as: NVL(email, 'none'), WHERE EMAIL IS NOT NULL, etc.
 
+## 如何使用（How to use)
+Sqltool提供了几个极其有用的类：DsqlUtils、SqltoolFactory、SqltoolContext、SparkDataLoader。DsqlUtils提供了DSQL语法解析的支持，SqltoolFactory提供了DSQL配置的管理，SqltoolContext、SparkDataLoader则集成了DsqlUtils和SqltoolFactory，实现对数据库实现基于DSQL的操作和访问。下面使用一些简单的例子来说明如何使用Sqltoolcontext，但Sqltool远不止如此，不一而足。
+
+Sqltool provides several extremely useful classes: DsqlUtils, SqltoolFactory, SqltoolContext, and SparkdataLoader. DsqlUtils supports the parsing of DSQL syntax, SqltoolFactory provides the management of DSQL configuration, and SqltoolContext and SparkDataLoader integrate DsqlUtils and SqltoolFactory to realize the operation and access of database based on DSQL. Here are some simple examples to illustrate how to use SqltoolContext, but sqltool is much more than that.
+
+
+	/**
+	 * 加载DSQL配置文件的基本包名
+	 * 
+	 * Base packages for where the configuration file is located
+	 */
+	String basePackages = "cn.tenmg.sqltool.app",
+			/**
+			 * DSQL配置文件的后缀名，默认“.dsql.xml”
+			 * 
+			 * The suffix of the configuration file, default '.dsql.xml'
+			 */
+			suffix = ".dsql.xml";
+	/**
+	 * 用于加载配置的Sqltool工厂 SqltoolFactory to load configuration
+	 */
+	SqltoolFactory sqltoolFactory = XMLFileSqltoolFactory.bind(basePackages, suffix);
+
+	/**
+	 * 日志中是否打印执行的SQL
+	 * 
+	 * Whether to print the executed SQL in the log
+	 */
+	boolean showSql = true;
+
+	/**
+	 * 
+	 * 当不指定批处理大小时，默认的批处理大小
+	 * 
+	 * The default batch size when no batch size is specified
+	 */
+	int defaultBatchSize = 500;
+
+	/**
+	 * Sqltoolcontext理论上适合注入到任何分布式程序中，例如Spark
+	 * 
+	 * Sqltoolcontext is theoretically suitable for injection into any distributed program, such as spark
+	 */
+	SqltoolContext sqltoolContext = new SqltoolContext(sqltoolFactory, showSql, defaultBatchSize);
+
+	/**
+	 * 数据库配置项
+	 * 
+	 * Database options
+	 */
+	Map<String, String> options = new HashMap<String, String>();
+	options.put("driver", "com.mysql.cj.jdbc.Driver");
+	options.put("url", "jdbc:mysql://127.0.0.1:3306/sqltool");
+	options.put("user", "root");
+	options.put("password", "");		
+
+
+	StaffInfo june = new StaffInfo("000001");
+	june.setStaffName("June");
+
+	/**
+	 * 
+	 * 插入实体对象
+	 * 
+	 * Insert entity object/objects
+	 */
+	sqltoolContext.insert(options, june);
+
+	/**
+	 * 使用员工编号加载员工信息
+	 * 
+	 * Load employee information with staffId
+	 */
+	StaffInfo params = new StaffInfo("000001");
+	june = sqltoolContext.get(options, params);
+
+	/**
+	 * 使用DSQL编号查询
+	 * 
+	 * Query with id of DSQL's id
+	 */
+	june = sqltoolContext.get(options, StaffInfo.class, "SELECT * FROM STAFF_INFO S WHERE 1=1 #[AND S.STAFF_ID = :staffId]", "staffId","000001");
+
+	/**
+	 * 使用DSQL编号查询。同时，你还可以使用Map对象来更自由地组织查询参数
+	 * 
+	 * Query with DSQL's id. You can also use map object to organize query parameters  at the same time
+	 */
+	Map<String, Object> paramaters = new HashMap<String, Object>();
+	paramaters.put("staffId", "000001");
+	june = sqltoolContext.get(options, StaffInfo.class, "find_staff_by_id", paramaters);
+
+	/**
+	 * 
+	 * 保存（插入或更新）实体对象
+	 * 
+	 * Save(insert or update) entity object/objects
+	 */
+	june.setStaffName("Happy June");
+	sqltoolContext.save(options, june);
+
 ## 对象关系映射（ORM）
 对象关系映射在java语言中是一种非常重要的技术，sqltool当然支持简单但足以应对很多情况的对象关系映射技术。比如，将查询的数据自动转换为对象，通过对象保存记录到数据库中。
 Object relational mapping is a very important technology in Java language. Sqltool certainly supports simple but sufficient object relationship mapping technology to deal with many situations. For example, the query data is automatically converted into objects, and records are saved to the database through objects.
