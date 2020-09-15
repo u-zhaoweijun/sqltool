@@ -153,9 +153,9 @@ Sqltool provides several extremely useful classes: DsqlUtils, SqltoolFactory, Sq
 	june = sqltoolContext.get(options, params);
 
 	/**
-	 * 使用DSQL编号查询
+	 * 使用DSQL查询。可以使用参数名值对来指定参数
 	 * 
-	 * Query with id of DSQL's id
+	 * Query with DSQL. We could use parameter name value pairs to specify parameters
 	 */
 	june = sqltoolContext.get(options, StaffInfo.class, "SELECT * FROM STAFF_INFO S WHERE 1=1 #[AND S.STAFF_ID = :staffId]", "staffId","000001");
 
