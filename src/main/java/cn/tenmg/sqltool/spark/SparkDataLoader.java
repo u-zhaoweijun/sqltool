@@ -97,11 +97,31 @@ public class SparkDataLoader implements Serializable {
 		return sql(sparkSession, sqltoolFactory.parse(dsql, params));
 	}
 
+	/**
+	 * 从数据库加载数据集
+	 * 
+	 * @param sparkSession
+	 *            spark会话
+	 * @param options
+	 *            数据库配置项
+	 * @param sql
+	 *            查询SQL对象
+	 * @return 返回查询的数据集
+	 */
 	private Dataset<Row> load(SparkSession sparkSession, Map<String, String> options, Sql sql) {
 		return sparkSession.sqlContext().read().options(options)
 				.option("query", SqlEngineUtils.getSqlEngine(options.get("driver")).parse(sql)).format("jdbc").load();
 	}
 
+	/**
+	 * 执行SparkSQL查询
+	 * 
+	 * @param sparkSession
+	 *            spark会话
+	 * @param sql
+	 *            查询SQL对象
+	 * @return 返回查询的数据集
+	 */
 	private Dataset<Row> sql(SparkSession sparkSession, Sql sql) {
 		return sparkSession.sqlContext().sql(SparkSQLSqlEngine.getInstance().parse(sql));
 	}

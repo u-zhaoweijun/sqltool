@@ -28,9 +28,16 @@ public abstract class AbstractSqlEngine implements SqlEngine {
 
 	private static final char SINGLE_QUOTATION_MARK = '\'';
 
-	abstract String parse(Date date);
+	protected static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss", TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
 
-	abstract String parse(Calendar calendar);
+	/**
+	 * 将日期转换为数据库可识别的字符串
+	 * 
+	 * @param date
+	 *            日期对象
+	 * @return 返回特定数据库可识别的日期字符串
+	 */
+	abstract String parse(Date date);
 
 	@Override
 	public String parse(Sql sql) {
@@ -132,7 +139,7 @@ public abstract class AbstractSqlEngine implements SqlEngine {
 		} else if (value instanceof Date) {
 			appendString(sb, parse((Date) value));
 		} else if (value instanceof Calendar) {
-			appendString(sb, parse((Calendar) value));
+			appendString(sb, parse(((Calendar) value).getTime()));
 		} else {
 			sb.append(value.toString());
 		}
