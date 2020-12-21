@@ -1,4 +1,4 @@
-# sqltool
+# sqltool 已迁移到https://github.com/10MG/sqltool.git
 ## 关于（About）
 Sqltool是一个给分布式环境提供动态结构化查询语言（DSQL）解析和执行的框架，如Spark、Spring Cloud、Dubbo等等。Sqltool能帮助程序员管理和执行庞大而复杂的动态结构化查询语言（DSQL），并使程序员从手动拼接繁杂的SQL工作中解脱；Sqltool还能给使用Spark SQL的程序员带来福音，因为动态结构化查询语言（DSQL）可以直接提交给Spark执行，解决Spark SQL传参的难题。
 
